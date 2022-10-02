@@ -1,0 +1,59 @@
+.jrslider-init {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+.slider-wrap {
+    display: flex;
+    position: relative;
+    transform: translateX(0px);
+}
+.jrslider-init .slider-button__prev,
+.jrslider-init .slider-button__next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+}
+.jrslider-init .slider-button__next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+.jrslider-init .slider-button__prev:hover,
+.jrslider-init .slider-button__next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+.jrslider-init .slider-button__prev:before {
+    content: '<';
+}
+.jrslider-init .slider-button__next:before {
+    content: '>';
+}
+.jrslider-init .slider-button.disabled {
+    display: none;
+}
+.slider-dots {
+    text-align: center;
+}
+.slider-dots__item {
+    cursor: pointer;
+    height: 12px;
+    width: 12px;
+    margin: 0 2px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+.slider-dots__item.active,
+.slider-dots__item:hover {
+    background-color: #aaa;
+}
