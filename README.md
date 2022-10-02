@@ -2,7 +2,7 @@
 
 JenjaRusSlider - слайдер на чистом javascript
 
-[DEMO](http://jenjarus.github.io/jrslider/index.html)
+[DEMO](http://jenjarus.github.io/JRSlider/index.html)
 
 ## Документация
 
