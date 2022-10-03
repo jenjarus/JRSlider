@@ -129,6 +129,8 @@ function createSlider(sliders, config) {
         if (!config.autoplayHover) {
             sliders.addEventListener("mouseover", () => clearTimeout(autoPlayInterval));
             sliders.addEventListener("mouseout", () => autoPlayInterval = setInterval(autoPlayHandle, config.interval));
+            sliders.addEventListener("pointerover", () => clearTimeout(autoPlayInterval));
+            sliders.addEventListener("pointerout", () => autoPlayInterval = setInterval(autoPlayHandle, config.interval));
         }
     }
 
