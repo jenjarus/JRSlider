@@ -38,7 +38,7 @@
     content: '>';
 }
 .jrslider-init .slider-button.disabled {
-    display: none;
+    opacity: 0.5;
 }
 .slider-dots {
     text-align: center;

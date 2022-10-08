@@ -7,6 +7,7 @@ export default function JRSlider(options = {}) {
     const defaults = {
         elem: '.jrslider', // Селектор с блоком слайдов
         slidesShow: 1, // Количество показываемых слайдов
+        slidesScroll: 1, // Количество пролистываемых слайдов
         speed: 500, // Время пролистывания
         loop: true,     // Бесконечное зацикливание слайдера
         autoplay: false,     // Автоматическое пролистывание
@@ -18,19 +19,26 @@ export default function JRSlider(options = {}) {
         dots: true, // Точки навигации
         customDots: false, // Изменить место прикрепления точек навигации
         swipe: true, // Пролистывание свайпом
+        responsive: false, // Адаптив
+
+        currentSlide: {}, // Текущий слайд для каждого созданного слайдера
     };
     const config = extend(options, defaults);
     const sliderList = document.querySelectorAll(config.elem);
 
     if (sliderList.length) {
-        for (let element of sliderList) {
-            if (element.classList.contains('jrslider-init')) continue;
-            createSlider(element, config)
+        for(let i = 0; i < sliderList.length; i++) {
+            checkResponsive(sliderList[i], config, i);
         }
+        window.addEventListener('resize', () => {
+            for(let i = 0; i < sliderList.length; i++) {
+                checkResponsive(sliderList[i], config, i);
+            }
+        });
     }
 }
 
-function createSlider(sliders, config) {
+function createSlider(sliders, config, indexSlider) {
     config.slidesScroll = 1; // Временно, до следующей версии
 
     let currentSlide; // Глобальное значение текущего слайда
@@ -78,14 +86,11 @@ function createSlider(sliders, config) {
 
     init();
 
-    // Перерисовка слайдера при изменении ширины экрана
-    window.addEventListener('resize', () => init('resize'));
-
     // === Создание элементов ===
     // Создание кнопки назад
     function createPrevButton() {
         const prevButton = document.createElement("a");
-        prevButton.classList.add('slider-button__prev');
+        prevButton.classList.add('slider-button__prev', 'slider-button');
         sliderNav.appendChild(prevButton);
         prevButton.addEventListener('click', () => {
             moveTo(currentSlide - config.slidesScroll);
@@ -95,7 +100,7 @@ function createSlider(sliders, config) {
     // Создание кнопки вперед
     function createNextButton() {
         const nextButton = document.createElement("a");
-        nextButton.classList.add('slider-button__next');
+        nextButton.classList.add('slider-button__next', 'slider-button');
         sliderNav.appendChild(nextButton);
         nextButton.addEventListener('click', () => {
             moveTo(currentSlide + config.slidesScroll);
@@ -105,6 +110,7 @@ function createSlider(sliders, config) {
     // Назначить кнопку назад на кастомный элемент
     function createCustomPrevButton() {
         const prevButton = document.querySelector(config.customPrev);
+        prevButton.classList.add('slider-button');
         prevButton.addEventListener('click', () => {
             moveTo(currentSlide - config.slidesScroll);
         });
@@ -113,6 +119,7 @@ function createSlider(sliders, config) {
     // Назначить кнопку вперед на кастомный элемент
     function createCustomNextButton() {
         const nextButton = document.querySelector(config.customNext);
+        nextButton.classList.add('slider-button');
         nextButton.addEventListener('click', () => {
             moveTo(currentSlide + config.slidesScroll);
         });
@@ -127,8 +134,6 @@ function createSlider(sliders, config) {
         autoPlayInterval = setInterval(autoPlayHandle, config.interval);
 
         if (!config.autoplayHover) {
-            sliders.addEventListener("mouseover", () => clearTimeout(autoPlayInterval));
-            sliders.addEventListener("mouseout", () => autoPlayInterval = setInterval(autoPlayHandle, config.interval));
             sliders.addEventListener("pointerover", () => clearTimeout(autoPlayInterval));
             sliders.addEventListener("pointerout", () => autoPlayInterval = setInterval(autoPlayHandle, config.interval));
         }
@@ -194,6 +199,10 @@ function createSlider(sliders, config) {
                 cycleActiveDots(dots, step)
             }
         }
+
+        if(config.arrows) {
+            checkButtonLoop();
+        }
     }
 
     // Добавление style transition. По окончанию transition переход на конец или начало слайдера
@@ -215,15 +224,47 @@ function createSlider(sliders, config) {
 
             addTransition();
             transitionMove(currentSlide);
+            config.currentSlide[indexSlider] = currentSlide;
         }
         allowTransition = false;
+    }
+
+    // Отключение стрелки, если это крайний слайд
+    function checkButtonLoop() {
+        if(currentSlide - config.slidesScroll < 0) {
+            if (config.customPrev) {
+                document.querySelector(config.customPrev).classList.add('disabled');
+            } else {
+                sliders.querySelector('.slider-button__prev').classList.add('disabled');
+            }
+        } else {
+            if (config.customPrev) {
+                document.querySelector(config.customPrev).classList.remove('disabled');
+            } else {
+                sliders.querySelector('.slider-button__prev').classList.remove('disabled');
+            }
+        }
+
+        if(currentSlide + config.slidesScroll >= slidersItems.length) {
+            if (config.customNext) {
+                document.querySelector(config.customNext).classList.add('disabled');
+            } else {
+                sliders.querySelector('.slider-button__next').classList.add('disabled');
+            }
+        } else {
+            if (config.customNext) {
+                document.querySelector(config.customNext).classList.remove('disabled');
+            } else {
+                sliders.querySelector('.slider-button__next').classList.remove('disabled');
+            }
+        }
     }
 
     // "Бесшовное" перемещение в конец или начало в зацикленном слайдере
     function loopBeginEnd() {
         if(config.loop) {
             if (currentSlide > slidersItems.length - (checkClone() * 2)) {
-                currentSlide = config.slidesScroll;
+                currentSlide = checkClone();
                 transitionMove(currentSlide);
             } else if (currentSlide <= 0) {
                 currentSlide = slidersItems.length - (checkClone() * 2);
@@ -294,9 +335,15 @@ function createSlider(sliders, config) {
     // === Перемещение END ===
 
     // === Инициализация слайдера ===
-    function init(flag = 'init') {
-        if (flag === 'init') {
-            config.loop ? currentSlide = checkClone() : currentSlide = 0;
+    function init() {
+        if(config.currentSlide[indexSlider]) {
+            currentSlide = config.currentSlide[indexSlider];
+        } else {
+            if(config.loop) {
+                currentSlide = config.slidesScroll
+            } else {
+                currentSlide = 0
+            }
         }
 
         transitionMove(currentSlide);
@@ -350,11 +397,74 @@ function createSlider(sliders, config) {
         }
     }
 
-    // Выводит сколько нужно сделано клонов на одной стороне
+    // Выводит сколько сделано клонов на одной стороне
     function checkClone() {
         return config.slidesScroll > config.slidesShow ? config.slidesScroll : config.slidesShow;
     }
     // === Вспомогательные функции END ===
+}
+
+// Проверка значений в responsive
+function checkResponsive(sliders, config, indexSlider) {
+    const windowsWidth = window.innerWidth; // Ширина экрана
+    let flagResponsive = true;
+
+    // Проверка на наличие элементов в слайдере
+    if(!sliders.children.length) {
+        return false;
+    }
+
+    if(config.responsive) {
+        config.responsive.sort((prev, next) => next.breakpoint - prev.breakpoint);
+
+        // Responsive значения config
+        for (let element of config.responsive) {
+            if (windowsWidth <= element.breakpoint) {
+                flagResponsive = false;
+                config = extend(element.settings, config);
+                reCreateSlider(sliders, config, indexSlider);
+            }
+        }
+    }
+
+    // Стандартные значения config
+    if(flagResponsive) {
+        reCreateSlider(sliders, config, indexSlider);
+    }
+}
+
+// Пересоздать слайдер
+function reCreateSlider(sliders, options, indexSlider) {
+    // Если слайдер создан, то тогда он удаляется
+    if (sliders.classList.contains('jrslider-init')) {
+        destroySlider(sliders);
+    }
+    createSlider(sliders, options, indexSlider);
+}
+
+// Удаляет элементы связанные со слайдером
+function destroySlider(sliders) {
+    let cloneItems = [];
+
+    for (let element of sliders.querySelectorAll(".clone")) {
+        element.remove()
+    }
+
+    const slidersItems = sliders.querySelectorAll('.slider-wrap > *');
+
+    for (let element of slidersItems) {
+        cloneItems.push(element.cloneNode(true))
+    }
+
+    sliders.classList.remove('jrslider-init');
+    sliders.querySelector(".slider-wrap").remove();
+    sliders.querySelector(".slider-nav").remove();
+
+    for (let element of cloneItems) {
+        element.classList.remove('active');
+        element.style = '';
+        sliders.appendChild(element);
+    }
 }
 
 function extend(options, defaults) {

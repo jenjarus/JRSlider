@@ -163,6 +163,53 @@
         </code>
     </div>
     <div class="demo-item">
+        <div class="demo-item__text">Слайдер без зацикливания</div>
+        <div class="slider slider-four">
+            <div class="item">
+                <img src="src/img/slide1.jpg" alt="Первый слайд">
+                <div class="slideText">1</div>
+            </div>
+            <div class="item">
+                <img src="src/img/slide2.jpg" alt="Второй слайд">
+                <div class="slideText">2</div>
+            </div>
+            <div class="item">
+                <img src="src/img/slide3.jpg" alt="Третий слайд">
+                <div class="slideText">3</div>
+            </div>
+            <div class="item">
+                <img src="src/img/slide1.jpg" alt="Первый слайд">
+                <div class="slideText">4</div>
+            </div>
+            <div class="item">
+                <img src="src/img/slide2.jpg" alt="Второй слайд">
+                <div class="slideText">5</div>
+            </div>
+            <div class="item">
+                <img src="src/img/slide3.jpg" alt="Третий слайд">
+                <div class="slideText">6</div>
+            </div>
+            <div class="item">
+                <img src="src/img/slide1.jpg" alt="Первый слайд">
+                <div class="slideText">7</div>
+            </div>
+            <div class="item">
+                <img src="src/img/slide2.jpg" alt="Второй слайд">
+                <div class="slideText">8</div>
+            </div>
+            <div class="item">
+                <img src="src/img/slide3.jpg" alt="Третий слайд">
+                <div class="slideText">9</div>
+            </div>
+        </div>
+        <code class="demo-item__code">
+            JRSlider({
+            <span>elem: '.slider-four',</span>
+            <span>loop: false,</span>
+            });
+        </code>
+    </div>
+    <div class="demo-item">
         <div class="demo-item__text">Все настройки слайдера:</div>
         <code class="demo-item__code">
             JRSlider({
@@ -179,6 +226,22 @@
             <span>dots: true,           // Точки навигации</span>
             <span>customDots: false,    // Изменить место прикрепления точек навигации</span>
             <span>swipe: true,          // Пролистывание свайпом</span>
+            <span>responsive: [{         // Поддержка изменений настроек при изменении разрешения ширины экрана</span>
+            <span>
+    breakpoint: 1024,       // Изменить настройки до данной ширины экрана
+    settings: {             // Изменяемые настройки
+        slidesShow: 3,
+        dots: false,
+        ...
+    },
+    breakpoint: 768,
+    settings: {
+        slidesShow: 2,
+        arrows: false,
+        ...
+    },
+    ...</span>
+            <span>}]</span>
             });
         </code>
         <div class="demo-item__text demo-item__text--download">Скачать: <a href="http://jenjarus.github.io/jrslider/">ссылка</a></div>
@@ -209,7 +272,7 @@
     });
     JRSlider({
         elem: '.slider-four',
-        slidesShow: 3,
+        loop: false,
     });
 </script>
 </body>
