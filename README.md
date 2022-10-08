@@ -1,6 +1,8 @@
 # JRSlider
 
-JenjaRusSlider - слайдер на чистом javascript
+JenjaRusSlider - легкий, адаптивный слайдер на чистом javascript.
+
+Поддержка IE >= 10 (если им еще пользуются)
 
 [DEMO](http://jenjarus.github.io/JRSlider/)
 

@@ -1,5 +1,6 @@
 const path = require('path');
 const autoprefixer = require('autoprefixer');
+const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
@@ -12,7 +13,8 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
     },
-    devtool: "eval-cheap-source-map",
+    devtool: "source-map",
+    target: ['web', 'es5'],
     module: {
         rules: [
             {
@@ -43,8 +45,10 @@ module.exports = {
                     options: {
                         presets: [
                             ['@babel/preset-env', {
+                                "useBuiltIns": "usage",
+                                "corejs": 3,
                                 targets: {
-                                    "ie": "11"
+                                    "ie": "10"
                                 }
                             }]
                         ]
@@ -56,6 +60,10 @@ module.exports = {
                 type: 'asset/resource',
             },
         ]
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin()],
     },
     plugins: [
         new MiniCssExtractPlugin({

@@ -1,5 +1,5 @@
 /*
-    JenjaRusSlider - слайдер
+    JenjaRusSlider - легкий, адаптивный слайдер на чистом javascript.
     Copyright (c) 2022 JenjaRus
 */
 
