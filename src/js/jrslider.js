@@ -200,7 +200,7 @@ function createSlider(sliders, config, indexSlider) {
             }
         }
 
-        if(config.arrows) {
+        if(!config.arrows) {
             checkButtonLoop();
         }
     }
