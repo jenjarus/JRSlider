@@ -49,36 +49,50 @@ function createSlider(sliders, config, indexSlider) {
     sliders.innerHTML = "<div class='slider-wrap'>" + sliders.innerHTML + "</div>";
     const slidersItems = sliders.querySelector('.slider-wrap').children;
     const sliderWrap = sliders.querySelector('.slider-wrap');
+    let slidersItemsNoClone = slidersItems.length; // Количество элементов без клонов
+    let evenSliders = slidersItemsNoClone % config.slidesScroll; // boolean
+    let slidersCloneOneSide = evenSliders ? config.slidesShow - config.slidesScroll : config.slidesShow - config.slidesScroll + 1; // Сколько делать клонов
+    let slidersCloneBothSides = slidersCloneOneSide === 0 ? 1 : slidersCloneOneSide * 2; // Сколько клонов с двух сторон (если 0 (1-1), то заменяем на 2)
 
     // Создание обертки навигационных кнопок
     const sliderNav = document.createElement("div");
     sliderNav.classList.add("slider-nav");
     sliders.appendChild(sliderNav);
 
-    if (config.loop) {
-        cloneElements();
-    }
-    if (config.arrows) {
-        if (config.customPrev) {
-            createCustomPrevButton();
-        } else {
-            createPrevButton();
+    if (slidersItemsNoClone > config.slidesShow) {
+        if (config.loop) {
+            cloneElements();
         }
-        if (config.customNext) {
-            createCustomNextButton();
-        } else {
-            createNextButton();
+        if (config.arrows) {
+            if (config.customPrev) {
+                createCustomPrevButton();
+            } else {
+                createPrevButton();
+            }
+            if (config.customNext) {
+                createCustomNextButton();
+            } else {
+                createNextButton();
+            }
         }
-    }
-    if (config.dots) {
-        if (config.customDots) {
-            createCustomDots();
-        } else {
-            createDots();
+        if (config.dots) {
+            if (config.customDots) {
+                createCustomDots();
+            } else {
+                createDots();
+            }
         }
-    }
-    if (config.autoplay) {
-        autoPlay();
+        if (config.autoplay) {
+            autoPlay();
+        }
+    } else {
+        config.loop = false;
+        config.autoplay = false;
+        config.arrows = false;
+        config.customPrev = false;
+        config.customNext = false;
+        config.dots = false;
+        config.customDots = false;
     }
     if (config.swipe) {
         createSwipe();
@@ -157,12 +171,12 @@ function createSlider(sliders, config, indexSlider) {
         let cloneFirst = [];
         let cloneLast = [];
 
-        for(let i = 0; i < checkClone(); i++) {
+        for(let i = 0; i < slidersCloneOneSide; i++) {
             let firstSlide = slidersItems[i];
             cloneFirst.push(firstSlide.cloneNode(true));
         }
 
-        for(let i = slidersItems.length - 1; i >= slidersItems.length - checkClone() ; i--) {
+        for(let i = slidersItems.length - 1; i >= slidersItems.length - slidersCloneOneSide ; i--) {
             let lastSlide = slidersItems[i];
             cloneLast.push(lastSlide.cloneNode(true));
         }
@@ -175,6 +189,7 @@ function createSlider(sliders, config, indexSlider) {
             element.classList.add('clone');
             sliderWrap.insertBefore(element, slidersItems[0]);
         }
+        slidersItemsNoClone = slidersItems.length - slidersCloneBothSides;
     }
     // === Создание элементов END ===
 
@@ -200,7 +215,7 @@ function createSlider(sliders, config, indexSlider) {
             }
         }
 
-        if(!config.arrows) {
+        if(config.arrows && !config.loop) {
             checkButtonLoop();
         }
     }
@@ -218,7 +233,7 @@ function createSlider(sliders, config, indexSlider) {
     // Перемещение сладов
     function moveTo(step) {
         if(allowTransition) {
-            if (config.loop || !(step >= slidersItems.length || step < 0)) {
+            if (config.loop || !(step >= slidersItems.length - (config.slidesShow - config.slidesScroll) || step < 0)) {
                 currentSlide = step;
             }
 
@@ -231,7 +246,7 @@ function createSlider(sliders, config, indexSlider) {
 
     // Отключение стрелки, если это крайний слайд
     function checkButtonLoop() {
-        if(currentSlide - config.slidesScroll < 0) {
+        if(currentSlide <= 0) {
             if (config.customPrev) {
                 document.querySelector(config.customPrev).classList.add('disabled');
             } else {
@@ -245,7 +260,7 @@ function createSlider(sliders, config, indexSlider) {
             }
         }
 
-        if(currentSlide + config.slidesScroll >= slidersItems.length) {
+        if(currentSlide >= slidersItemsNoClone - config.slidesShow) {
             if (config.customNext) {
                 document.querySelector(config.customNext).classList.add('disabled');
             } else {
@@ -263,11 +278,11 @@ function createSlider(sliders, config, indexSlider) {
     // "Бесшовное" перемещение в конец или начало в зацикленном слайдере
     function loopBeginEnd() {
         if(config.loop) {
-            if (currentSlide > slidersItems.length - (checkClone() * 2)) {
-                currentSlide = checkClone();
+            if (currentSlide <= 0) {
+                currentSlide = slidersItemsNoClone;
                 transitionMove(currentSlide);
-            } else if (currentSlide <= 0) {
-                currentSlide = slidersItems.length - (checkClone() * 2);
+            } else if (currentSlide >= slidersItemsNoClone + slidersCloneOneSide) {
+                currentSlide = slidersCloneOneSide;
                 transitionMove(currentSlide);
             }
         }
@@ -340,7 +355,7 @@ function createSlider(sliders, config, indexSlider) {
             currentSlide = config.currentSlide[indexSlider];
         } else {
             if(config.loop) {
-                currentSlide = config.slidesScroll
+                currentSlide = slidersCloneOneSide
             } else {
                 currentSlide = 0
             }
@@ -366,18 +381,17 @@ function createSlider(sliders, config, indexSlider) {
     // Цикл для создания точек
     function cycleCreateDots(dot) {
         dot.classList.add("slider-dots");
-
         if(config.loop) {
-            for (let i = checkClone() - 1; i < slidersItems.length - (checkClone() * 2); i += checkClone()) {
+            for (let i = slidersCloneOneSide; i <= slidersItemsNoClone + (config.slidesShow - config.slidesScroll); i += config.slidesScroll) {
                 const dots = document.createElement("span");
                 dots.classList.add('slider-dots__item');
                 dot.appendChild(dots);
                 dots.addEventListener('click', () => {
-                    moveTo(i + 1);
+                    moveTo(i);
                 });
             }
         } else {
-            for (let i = 0; i < slidersItems.length; i += config.slidesScroll) {
+            for (let i = 0; i < slidersItems.length - (config.slidesShow - config.slidesScroll); i += config.slidesScroll) {
                 const dots = document.createElement("span");
                 dots.classList.add('slider-dots__item');
                 dot.appendChild(dots);
@@ -390,16 +404,13 @@ function createSlider(sliders, config, indexSlider) {
 
     // Цикл изменения точек
     function cycleActiveDots(dots, step) {
-        let loop = config.loop ? 1 : 0;
+        let loop = config.loop ? 1 : -(config.slidesShow - config.slidesScroll);
+        let indexActiveDots = step - (config.slidesShow - config.slidesScroll) - loop;
+        indexActiveDots = indexActiveDots < 0 ? slidersItemsNoClone + indexActiveDots : indexActiveDots;
         for (let element of dots) element.classList.remove("active");
-        if(dots[step / checkClone() - loop]) {
-            dots[step / checkClone() - loop].classList.add("active");
+        if(dots[indexActiveDots]) {
+            dots[indexActiveDots].classList.add("active");
         }
-    }
-
-    // Выводит сколько сделано клонов на одной стороне
-    function checkClone() {
-        return config.slidesScroll > config.slidesShow ? config.slidesScroll : config.slidesShow;
     }
     // === Вспомогательные функции END ===
 }

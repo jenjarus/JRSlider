@@ -213,23 +213,23 @@
         <div class="demo-item__text">Все настройки слайдера:</div>
         <code class="demo-item__code">
             JRSlider({
-            <span>elem: '.jrslider',    // Селектор с блоком слайдов (class .jrslider - по умолчанию)</span>
-            <span>slidesShow: 1,        // Количество показываемых слайдов</span>
-            <span>speed: 500,           // Время пролистывания</span>
-            <span>loop: true,           // Бесконечное зацикливание слайдера</span>
-            <span>autoplay: false,      // Автоматическое пролистывание</span>
-            <span>autoplayHover: false, // Ставить на паузу пролистывание при наведении</span>
-            <span>interval: 5000,       // Интервал между пролистыванием элементов (мс)</span>
-            <span>arrows: true,         // Пролистывание стрелками</span>
-            <span>customPrev: false,    // Назначение элемента для кнопки назад</span>
-            <span>customNext: false,    // Назначение элемента для кнопки вперед</span>
-            <span>dots: true,           // Точки навигации</span>
-            <span>customDots: false,    // Изменить место прикрепления точек навигации</span>
-            <span>swipe: true,          // Пролистывание свайпом</span>
-            <span>responsive: [{        // Поддержка изменений настроек при изменении разрешения ширины экрана</span>
+            <span>elem: '.jrslider',    // Селектор с блоком слайдов (class .jrslider - по умолчанию) (string - selector)</span>
+            <span>slidesShow: 1,        // Количество показываемых слайдов (number)</span>
+            <span>speed: 500,           // Время пролистывания (мс) (number)</span>
+            <span>loop: true,           // Бесконечное зацикливание слайдера (boolean)</span>
+            <span>autoplay: false,      // Автоматическое пролистывание (boolean)</span>
+            <span>autoplayHover: false, // Ставить на паузу пролистывание при наведении (boolean)</span>
+            <span>interval: 5000,       // Интервал между пролистыванием элементов (мс) (number)</span>
+            <span>arrows: true,         // Пролистывание стрелками (boolean)</span>
+            <span>customPrev: false,    // Назначение элемента для кнопки назад (string - selector)</span>
+            <span>customNext: false,    // Назначение элемента для кнопки вперед (string - selector)</span>
+            <span>dots: true,           // Точки навигации (boolean)</span>
+            <span>customDots: false,    // Изменить место прикрепления точек навигации (string - selector)</span>
+            <span>swipe: true,          // Пролистывание свайпом (boolean)</span>
+            <span>responsive: [{        // Поддержка изменений настроек при изменении разрешения ширины экрана (object array)</span>
             <span>
-    breakpoint: 1024, // Изменить настройки до данной ширины экрана
-    settings: {       // Изменяемые настройки
+    breakpoint: 1024, // Изменить настройки до данной ширины экрана (number)
+    settings: {       // Изменяемые настройки (object)
         slidesShow: 3,
         dots: false,
         ...
@@ -244,7 +244,7 @@
             <span>}]</span>
             });
         </code>
-        <div class="demo-item__text demo-item__text--download">Скачать: <a href="http://jenjarus.github.io/jrslider/">ссылка</a></div>
+        <div class="demo-item__text demo-item__text--download">Скачать: <a href="http://jenjarus.github.io/JRSlider/">ссылка</a></div>
     </div>
 </div>
 <footer>

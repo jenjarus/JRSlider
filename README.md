@@ -18,8 +18,18 @@ JenjaRusSlider - легкий, адаптивный слайдер на чист
 
 - HTML
 
+По умолчанию
 ```html
   <div class="jrslider">
+      <div class="item">Item 1</div>
+      <div class="item">Item 2</div>
+      <div class="item">...</div>
+      ...
+  </div>
+```
+или
+```html
+  <div class="*your-selector*">
       <div class="item">Item 1</div>
       <div class="item">Item 2</div>
       <div class="item">...</div>
@@ -39,22 +49,22 @@ JenjaRusSlider - легкий, адаптивный слайдер на чист
 
 ```javascript
   JRSlider({
-    elem: '.jrslider',    // Селектор с блоком слайдов (class .jrslider - по умолчанию)
-    slidesShow: 1,        // Количество показываемых слайдов
-    speed: 500,           // Время пролистывания
-    loop: true,           // Бесконечное зацикливание слайдера
-    autoplay: false,      // Автоматическое пролистывание
-    autoplayHover: false, // Ставить на паузу пролистывание при наведении
-    interval: 5000,       // Интервал между пролистыванием элементов (мс)
-    arrows: true,         // Пролистывание стрелками
-    customPrev: false,    // Назначение элемента для кнопки назад
-    customNext: false,    // Назначение элемента для кнопки вперед
-    dots: true,           // Точки навигации
-    customDots: false,    // Изменить место прикрепления точек навигации
-    swipe: true,          // Пролистывание свайпом
-    responsive: [{        // Поддержка изменений настроек при изменении разрешения ширины экрана
-        breakpoint: 1024, // Изменить настройки до данной ширины экрана
-        settings: {       // Изменяемые настройки
+    elem: '.jrslider',    // Селектор с блоком слайдов (class .jrslider - по умолчанию) (string - selector)
+    slidesShow: 1,        // Количество показываемых слайдов (number)
+    speed: 500,           // Время пролистывания (мс) (number)
+    loop: true,           // Бесконечное зацикливание слайдера (boolean)
+    autoplay: false,      // Автоматическое пролистывание (boolean)
+    autoplayHover: false, // Ставить на паузу пролистывание при наведении (boolean)
+    interval: 5000,       // Интервал между пролистыванием элементов (мс) (number)
+    arrows: true,         // Пролистывание стрелками (boolean)
+    customPrev: false,    // Назначение элемента для кнопки назад (string - selector)
+    customNext: false,    // Назначение элемента для кнопки вперед (string - selector)
+    dots: true,           // Точки навигации (boolean)
+    customDots: false,    // Изменить место прикрепления точек навигации (string - selector)
+    swipe: true,          // Пролистывание свайпом (boolean)
+    responsive: [{        // Поддержка изменений настроек при изменении разрешения ширины экрана (object array)
+        breakpoint: 1024, // Изменить настройки до данной ширины экрана (number)
+        settings: {       // Изменяемые настройки (object)
             slidesShow: 3,
             dots: false,
             ...
